@@ -3,11 +3,16 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { useLang } from '@/lib/lang'
+import { useT } from '@/lib/translations'
 
 const REVEAL_DURATION = 1.3
 const TEXT_START = 0.9
 
 export default function HomeHero() {
+  const { lang } = useLang()
+  const tr = useT(lang).hero
+
   return (
     <section className="relative overflow-hidden flex items-end" style={{ height: '100vh', minHeight: 620, background: 'var(--cream)' }}>
       {/* Image — clip-path expands symmetrically from the center column outward */}
@@ -49,7 +54,7 @@ export default function HomeHero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: TEXT_START + 0.45, ease: [0.25, 0.46, 0.45, 0.94] }}
         >
-          Vlorë, Albania · Est. 2023
+          {tr.tagline}
         </motion.p>
         <motion.h1
           className="font-[family-name:var(--font-head)] italic text-[clamp(2.8rem,7.5vw,6rem)] leading-[1.05] max-w-[700px] mb-4"
@@ -58,7 +63,7 @@ export default function HomeHero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.85, delay: TEXT_START + 0.55, ease: [0.25, 0.46, 0.45, 0.94] }}
         >
-          Where the sea<br />finds stillness.
+          {tr.h1a}<br />{tr.h1b}
         </motion.h1>
         <motion.p
           className="text-[clamp(0.78rem,1.2vw,0.88rem)] tracking-[0.18em] uppercase mb-8"
@@ -67,7 +72,7 @@ export default function HomeHero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: TEXT_START + 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
         >
-          Boutique Hotel · Rooftop Pool · 400m from the Beach
+          {tr.sub}
         </motion.p>
         <motion.div
           className="flex gap-4 flex-wrap"
@@ -75,12 +80,12 @@ export default function HomeHero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: TEXT_START + 0.85, ease: [0.25, 0.46, 0.45, 0.94] }}
         >
-          <Link href="/booking" className="inline-flex items-center justify-center text-[0.75rem] font-medium tracking-[0.14em] uppercase px-8 py-[0.85rem] rounded-[var(--radius)] transition-all duration-300 hover:-translate-y-px cursor-pointer" style={{ background: 'var(--wood)', color: 'var(--white)', border: '1.5px solid var(--wood)' }}>Reserve Now</Link>
-          <Link href="/rooms" className="inline-flex items-center justify-center text-[0.75rem] font-medium tracking-[0.14em] uppercase px-8 py-[0.85rem] rounded-[var(--radius)] transition-all duration-300 hover:-translate-y-px cursor-pointer" style={{ color: 'var(--white)', border: '1.5px solid rgba(253,250,245,0.7)' }}>Explore Rooms</Link>
+          <Link href="/booking" className="inline-flex items-center justify-center text-[0.75rem] font-medium tracking-[0.14em] uppercase px-8 py-[0.85rem] rounded-[var(--radius)] transition-all duration-300 hover:-translate-y-px cursor-pointer" style={{ background: 'var(--wood)', color: 'var(--white)', border: '1.5px solid var(--wood)' }}>{tr.cta1}</Link>
+          <Link href="/rooms" className="inline-flex items-center justify-center text-[0.75rem] font-medium tracking-[0.14em] uppercase px-8 py-[0.85rem] rounded-[var(--radius)] transition-all duration-300 hover:-translate-y-px cursor-pointer" style={{ color: 'var(--white)', border: '1.5px solid rgba(253,250,245,0.7)' }}>{tr.cta2}</Link>
         </motion.div>
       </div>
 
-      {/* Scroll indicator — appears after everything else */}
+      {/* Scroll indicator */}
       <motion.div
         className="absolute bottom-10 right-[var(--gutter)] flex flex-col items-center gap-2 z-10"
         aria-hidden

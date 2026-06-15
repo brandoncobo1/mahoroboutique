@@ -3,6 +3,7 @@ import { Cormorant_Garamond, DM_Sans } from 'next/font/google'
 import './globals.css'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import { LangProvider } from '@/lib/lang'
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
@@ -40,9 +41,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>
       <body>
-        <Nav />
-        <main>{children}</main>
-        <Footer />
+        <LangProvider>
+          <Nav />
+          <main>{children}</main>
+          <Footer />
+        </LangProvider>
       </body>
     </html>
   )

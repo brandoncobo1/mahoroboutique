@@ -1,21 +1,23 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useLang, type Lang } from '@/lib/lang'
+import { useT } from '@/lib/translations'
 
-const links = [
-  { href: '/', label: 'Home' },
-  { href: '/rooms', label: 'Rooms' },
-  { href: '/about', label: 'About' },
-  { href: '/gallery', label: 'Gallery' },
-  { href: '/reviews', label: 'Reviews' },
-  { href: '/location', label: 'Location' },
-  { href: '/faq', label: 'FAQ' },
+type NavKey = 'home' | 'rooms' | 'about' | 'gallery' | 'reviews' | 'location' | 'faq'
+
+const NAV_LINKS: { href: string; key: NavKey }[] = [
+  { href: '/', key: 'home' },
+  { href: '/rooms', key: 'rooms' },
+  { href: '/about', key: 'about' },
+  { href: '/gallery', key: 'gallery' },
+  { href: '/reviews', key: 'reviews' },
+  { href: '/location', key: 'location' },
+  { href: '/faq', key: 'faq' },
 ]
-
-type Lang = 'en' | 'sq' | 'it'
 
 export default function Nav() {
   const pathname = usePathname()
@@ -23,14 +25,10 @@ export default function Nav() {
 
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [lang, setLang] = useState<Lang>('en')
   const rafRef = useRef<number | null>(null)
 
-  // Read saved lang once on mount
-  useEffect(() => {
-    const saved = localStorage.getItem('mahoro_lang') as Lang | null
-    if (saved) setLang(saved)
-  }, [])
+  const { lang, setLang } = useLang()
+  const tr = useT(lang)
 
   // RAF-throttled scroll — only triggers state update when boolean flips
   useEffect(() => {
@@ -57,12 +55,6 @@ export default function Nav() {
   }, [menuOpen])
 
   const transparent = isHome && !scrolled
-
-  // Defer localStorage write so React state update fires first
-  const switchLang = useCallback((l: Lang) => {
-    setLang(l)
-    queueMicrotask(() => localStorage.setItem('mahoro_lang', l))
-  }, [])
 
   const navBg = transparent
     ? 'bg-transparent'
@@ -96,7 +88,7 @@ export default function Nav() {
 
           {/* Center links */}
           <div className="hidden md:flex items-center gap-[clamp(1.2rem,2.5vw,2rem)]">
-            {links.map(({ href, label }) => {
+            {NAV_LINKS.map(({ href, key }) => {
               const active = pathname === href || pathname.startsWith(href + '/')
               return (
                 <Link
@@ -105,7 +97,7 @@ export default function Nav() {
                   className="relative text-[0.7rem] font-medium tracking-[0.14em] uppercase transition-colors duration-300 group"
                   style={{ color: 'var(--ink-mid)' }}
                 >
-                  {label}
+                  {tr.nav[key]}
                   <span
                     className="absolute bottom-[-3px] left-0 right-0 h-[1px] transition-transform duration-300 origin-left"
                     style={{
@@ -124,7 +116,7 @@ export default function Nav() {
               {(['en', 'sq', 'it'] as Lang[]).map((l) => (
                 <button
                   key={l}
-                  onClick={() => switchLang(l)}
+                  onClick={() => setLang(l)}
                   className="text-[0.65rem] font-semibold tracking-[0.1em] px-[0.4rem] py-1 rounded-[2px] transition-all duration-150 uppercase cursor-pointer"
                   style={{
                     color: lang === l ? 'var(--wood)' : 'var(--ink-light)',
@@ -140,7 +132,7 @@ export default function Nav() {
               className="text-[0.65rem] font-semibold tracking-[0.14em] uppercase px-[1.2rem] py-[0.55rem] rounded-[var(--radius)] border-[1.5px] transition-all duration-200 hover:bg-[var(--wood)] hover:text-[var(--white)]"
               style={{ color: 'var(--wood)', borderColor: 'var(--wood)' }}
             >
-              Reserve
+              {tr.nav.reserve}
             </Link>
           </div>
 
@@ -179,7 +171,7 @@ export default function Nav() {
             </button>
 
             {/* Nav links */}
-            {links.map(({ href, label }, i) => (
+            {NAV_LINKS.map(({ href, key }, i) => (
               <motion.div
                 key={href}
                 initial={{ opacity: 0, y: 16 }}
@@ -193,7 +185,7 @@ export default function Nav() {
                   className="block font-[family-name:var(--font-head)] italic text-[clamp(2.2rem,8vw,3.5rem)] leading-[1.25] hover:text-[var(--wood)] transition-colors duration-200"
                   style={{ color: 'var(--bark)' }}
                 >
-                  {label}
+                  {tr.nav[key]}
                 </Link>
               </motion.div>
             ))}
@@ -203,7 +195,7 @@ export default function Nav() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 8 }}
-              transition={{ delay: links.length * 0.04, duration: 0.3 }}
+              transition={{ delay: NAV_LINKS.length * 0.04, duration: 0.3 }}
             >
               <Link
                 href="/booking"
@@ -211,7 +203,7 @@ export default function Nav() {
                 className="block font-[family-name:var(--font-head)] italic text-[clamp(2.2rem,8vw,3.5rem)] leading-[1.25] hover:opacity-80 transition-opacity duration-200"
                 style={{ color: 'var(--wood)' }}
               >
-                Reserve Now
+                {tr.nav.reserveNow}
               </Link>
             </motion.div>
 
@@ -220,7 +212,7 @@ export default function Nav() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ delay: (links.length + 1) * 0.04, duration: 0.3 }}
+              transition={{ delay: (NAV_LINKS.length + 1) * 0.04, duration: 0.3 }}
               className="mt-8"
             >
               <a
@@ -228,7 +220,7 @@ export default function Nav() {
                 className="text-[0.75rem] font-medium tracking-[0.14em] uppercase"
                 style={{ color: 'var(--ink-light)' }}
               >
-                +355 69 606 0522
+                {tr.nav.phone}
               </a>
             </motion.div>
           </motion.div>
