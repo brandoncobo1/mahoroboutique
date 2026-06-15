@@ -147,7 +147,7 @@ export default function HomePage() {
 
       {/* Pool feature */}
       <div className="relative flex items-center justify-center overflow-hidden" style={{ height: '70vh', minHeight: 420 }}>
-        <Image src="/images/707836355.jpg" alt="Mahoro rooftop pool at sunset" fill className="object-cover" />
+        <Image src="/images/707836355.jpg" alt="Mahoro rooftop pool at sunset" fill sizes="100vw" className="object-cover" />
         <div className="absolute inset-0" style={{ background: 'rgba(28,22,16,0.5)' }} />
         <Reveal className="relative z-10 text-center px-[var(--gutter)]">
           <blockquote className="font-[family-name:var(--font-head)] italic text-[clamp(1.8rem,4.5vw,3.5rem)] max-w-[700px] leading-[1.2] mb-8" style={{ color: 'var(--white)' }}>
