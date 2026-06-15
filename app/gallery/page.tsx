@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import SectionLabel from '@/components/SectionLabel'
 import Reveal from '@/components/Reveal'
 import Link from 'next/link'
+import { useLang } from '@/lib/lang'
+import { useT } from '@/lib/translations'
 
 type Category = 'all' | 'pool' | 'rooms' | 'views' | 'property'
 
@@ -19,7 +21,6 @@ interface GalleryItem {
 }
 
 const items: GalleryItem[] = [
-  // Pool
   { src: '/images/707836355.jpg', alt: 'Mahoro rooftop pool with white sun loungers and panoramic Ionian Sea view', caption: 'The Rooftop Pool', cat: 'pool', wide: true },
   { src: '/images/707835689.jpg', alt: 'Mahoro rooftop pool portrait view with warm afternoon light', caption: 'Afternoon at the Pool', cat: 'pool', tall: true },
   { src: '/images/857055561.jpg', alt: 'Rooftop pool deck with sea-facing loungers', caption: 'Golden Hour · Pool Deck', cat: 'pool' },
@@ -28,7 +29,6 @@ const items: GalleryItem[] = [
   { src: '/images/716409017.jpg', alt: 'Pool bar area with sea view', caption: 'The Pool Bar', cat: 'pool' },
   { src: '/images/716409025.jpg', alt: 'Rooftop lounge with rattan furniture overlooking the sea', caption: 'Rooftop Lounge', cat: 'pool' },
   { src: '/images/716409034.jpg', alt: 'Rooftop terrace showing pool and sea simultaneously', caption: 'Pool & Sea', cat: 'pool' },
-  // Rooms
   { src: '/images/694870449.jpg', alt: 'Deluxe sea view bedroom with honey walls, rattan lamp and open balcony', caption: 'Deluxe Sea View Room', cat: 'rooms', wide: true },
   { src: '/images/694848301.jpg', alt: 'Bedroom with warm timber ceiling, rattan pendant and sea view balcony', caption: 'Timber & Rattan Interior', cat: 'rooms', tall: true },
   { src: '/images/694857450.jpg', alt: 'Side sea view room with angled balcony view', caption: 'Side Sea View Room', cat: 'rooms' },
@@ -41,14 +41,12 @@ const items: GalleryItem[] = [
   { src: '/images/694847940.jpg', alt: 'Deluxe queen room with boutique interiors', caption: 'Deluxe Queen Room', cat: 'rooms' },
   { src: '/images/694870460.jpg', alt: 'Room with morning natural light through linen curtains', caption: 'Morning Light', cat: 'rooms', wide: true },
   { src: '/images/694848392.jpg', alt: 'Wooden ceiling beams detail above the bed', caption: 'Ceiling Detail', cat: 'rooms' },
-  // Views
   { src: '/images/694870481.jpg', alt: 'Full sea view from private balcony over the Ionian', caption: 'Full Panoramic Balcony', cat: 'views', wide: true },
   { src: '/images/694848159.jpg', alt: 'Balcony at dusk with copper-toned sea and mountain silhouette', caption: 'Dusk Over the Bay', cat: 'views', tall: true },
   { src: '/images/694842331.jpg', alt: 'Balcony table with sea view over the Lungomare promenade', caption: 'Balcony Over the Lungomare', cat: 'views' },
   { src: '/images/694870506.jpg', alt: 'Sea view room balcony with morning coffee and open horizon', caption: 'Morning Coffee · Sea View', cat: 'views', wide: true },
   { src: '/images/694857468.jpg', alt: 'Side sea view balcony with bay at an angle', caption: 'Side Sea View', cat: 'views' },
   { src: '/images/694855719.jpg', alt: 'Sea view through the window in afternoon light', caption: 'Sea from the Window', cat: 'views' },
-  // Property
   { src: '/images/714395009.jpg', alt: 'Mahoro Boutique Hotel property in Vlorë', caption: 'Mahoro · The Property', cat: 'property', wide: true },
   { src: '/images/714395021.jpg', alt: 'Hotel common areas with rattan and natural finishes', caption: 'Common Areas', cat: 'property', tall: true },
   { src: '/images/714395014.jpg', alt: 'Hotel entrance with boutique atmosphere', caption: 'The Entrance', cat: 'property' },
@@ -58,15 +56,12 @@ const items: GalleryItem[] = [
   { src: '/images/714395037.jpg', alt: 'Hotel restaurant and bar with Adriatic cuisine', caption: 'Restaurant & Bar', cat: 'property' },
 ]
 
-const filters: { key: Category; label: string }[] = [
-  { key: 'all', label: 'All' },
-  { key: 'pool', label: 'Pool' },
-  { key: 'rooms', label: 'Rooms' },
-  { key: 'views', label: 'Views' },
-  { key: 'property', label: 'Property' },
-]
+const FILTER_KEYS: Category[] = ['all', 'pool', 'rooms', 'views', 'property']
 
 export default function GalleryPage() {
+  const { lang } = useLang()
+  const tr = useT(lang).pages.gallery
+
   const [active, setActive] = useState<Category>('all')
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null)
 
@@ -78,19 +73,27 @@ export default function GalleryPage() {
     setLightboxIdx((prev) => prev === null ? null : (prev + d + visible.length) % visible.length)
   }, [visible.length])
 
+  const filterLabels: Record<Category, string> = {
+    all: tr.filters.all,
+    pool: tr.filters.pool,
+    rooms: tr.filters.rooms,
+    views: tr.filters.views,
+    property: tr.filters.property,
+  }
+
   return (
     <>
       {/* Header */}
       <section className="px-[var(--gutter)] text-center" style={{ background: 'var(--bark)', padding: 'calc(var(--nav-h) + 4rem) var(--gutter) 3.5rem' }}>
-        <Reveal><SectionLabel light center>Visual Story</SectionLabel></Reveal>
+        <Reveal><SectionLabel light center>{tr.heroLabel}</SectionLabel></Reveal>
         <Reveal delay={0.05}>
           <h1 className="font-[family-name:var(--font-head)] italic text-[clamp(2.5rem,6vw,4.5rem)] mt-3" style={{ color: 'var(--white)' }}>
-            A hotel you need<br /><em>to see.</em>
+            {tr.heroH1a}<br /><em>{tr.heroH1b}</em>
           </h1>
         </Reveal>
         <Reveal delay={0.1}>
           <p className="max-w-[480px] mx-auto mt-3 text-[0.9rem]" style={{ color: 'rgba(212,196,168,0.72)' }}>
-            Rooftop pool, sea view rooms, rattan interiors. Every space in Mahoro was designed to be looked at — and to look out at something worth seeing.
+            {tr.heroP}
           </p>
         </Reveal>
       </section>
@@ -98,17 +101,17 @@ export default function GalleryPage() {
       {/* Filters */}
       <div className="px-[var(--gutter)] border-b sticky z-50" style={{ background: 'var(--cream)', borderColor: 'var(--border)', top: 'var(--nav-h)', padding: '1.5rem var(--gutter)' }}>
         <div className="mx-auto flex gap-2 flex-wrap" style={{ maxWidth: 'var(--max-w)' }}>
-          {filters.map((f) => (
+          {FILTER_KEYS.map((key) => (
             <button
-              key={f.key}
-              onClick={() => setActive(f.key)}
+              key={key}
+              onClick={() => setActive(key)}
               className="text-[0.68rem] font-semibold tracking-[0.14em] uppercase px-[1.1rem] py-[0.45rem] rounded-[var(--radius)] border cursor-pointer transition-all duration-300"
               style={{
-                background: active === f.key ? 'var(--wood)' : 'transparent',
-                color: active === f.key ? 'var(--white)' : 'var(--ink-mid)',
-                borderColor: active === f.key ? 'var(--wood)' : 'var(--border)',
+                background: active === key ? 'var(--wood)' : 'transparent',
+                color: active === key ? 'var(--white)' : 'var(--ink-mid)',
+                borderColor: active === key ? 'var(--wood)' : 'var(--border)',
               }}
-            >{f.label}</button>
+            >{filterLabels[key]}</button>
           ))}
         </div>
       </div>
@@ -162,26 +165,12 @@ export default function GalleryPage() {
             </div>
             <button onClick={closeLightbox} className="absolute top-5 right-6 text-[1.75rem] leading-none cursor-pointer" style={{ color: 'rgba(212,196,168,0.6)', background: 'none', border: 'none' }}>×</button>
             <button onClick={() => shiftLightbox(-1)} className="absolute left-4 top-1/2 -translate-y-1/2 text-[2rem] leading-none cursor-pointer px-4 py-4" style={{ color: 'rgba(212,196,168,0.45)', background: 'none', border: 'none' }}>‹</button>
-
             <div className="relative" style={{ maxWidth: 'min(90vw, 1100px)', maxHeight: '78vh' }}>
-              <motion.div
-                key={lightboxIdx}
-                initial={{ opacity: 0, scale: 0.97 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.25 }}
-              >
-                <Image
-                  src={visible[lightboxIdx].src}
-                  alt={visible[lightboxIdx].alt}
-                  width={1200}
-                  height={800}
-                  className="rounded-[var(--radius)] object-contain"
-                  style={{ maxWidth: 'min(90vw,1100px)', maxHeight: '78vh', width: 'auto', height: 'auto' }}
-                />
+              <motion.div key={lightboxIdx} initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.25 }}>
+                <Image src={visible[lightboxIdx].src} alt={visible[lightboxIdx].alt} width={1200} height={800} className="rounded-[var(--radius)] object-contain" style={{ maxWidth: 'min(90vw,1100px)', maxHeight: '78vh', width: 'auto', height: 'auto' }} />
               </motion.div>
             </div>
             <div className="mt-3 text-[0.78rem] tracking-[0.06em] text-center" style={{ color: 'rgba(212,196,168,0.65)' }}>{visible[lightboxIdx].caption}</div>
-
             <button onClick={() => shiftLightbox(1)} className="absolute right-4 top-1/2 -translate-y-1/2 text-[2rem] leading-none cursor-pointer px-4 py-4" style={{ color: 'rgba(212,196,168,0.45)', background: 'none', border: 'none' }}>›</button>
           </motion.div>
         )}
@@ -190,9 +179,9 @@ export default function GalleryPage() {
       {/* CTA */}
       <section className="px-[var(--gutter)] py-[clamp(3rem,6vw,5rem)] text-center" style={{ background: 'var(--bark)' }}>
         <Reveal>
-          <h2 className="font-[family-name:var(--font-head)] italic text-[clamp(1.8rem,4vw,2.8rem)] mb-4" style={{ color: 'var(--white)' }}>The view is better in person.</h2>
-          <p className="max-w-[420px] mx-auto mb-7 text-[0.88rem]" style={{ color: 'rgba(212,196,168,0.7)' }}>Reserve directly for the best rate — no fees, no intermediaries.</p>
-          <Link href="/booking" className="inline-flex items-center justify-center text-[0.75rem] font-medium tracking-[0.14em] uppercase px-8 py-[0.85rem] rounded-[var(--radius)] border-[1.5px] transition-all duration-300 hover:-translate-y-px hover:bg-[var(--white)] hover:text-[var(--bark)] cursor-pointer" style={{ color: 'var(--white)', borderColor: 'rgba(212,196,168,0.4)' }}>Reserve Now</Link>
+          <h2 className="font-[family-name:var(--font-head)] italic text-[clamp(1.8rem,4vw,2.8rem)] mb-4" style={{ color: 'var(--white)' }}>{tr.ctaH2}</h2>
+          <p className="max-w-[420px] mx-auto mb-7 text-[0.88rem]" style={{ color: 'rgba(212,196,168,0.7)' }}>{tr.ctaP}</p>
+          <Link href="/booking" className="inline-flex items-center justify-center text-[0.75rem] font-medium tracking-[0.14em] uppercase px-8 py-[0.85rem] rounded-[var(--radius)] border-[1.5px] transition-all duration-300 hover:-translate-y-px hover:bg-[var(--white)] hover:text-[var(--bark)] cursor-pointer" style={{ color: 'var(--white)', borderColor: 'rgba(212,196,168,0.4)' }}>{tr.ctaBtn}</Link>
         </Reveal>
       </section>
     </>

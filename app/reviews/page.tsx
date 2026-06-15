@@ -6,14 +6,16 @@ import { motion, useInView } from 'framer-motion'
 import SectionLabel from '@/components/SectionLabel'
 import Reveal from '@/components/Reveal'
 import StaggerReveal, { StaggerItem } from '@/components/StaggerReveal'
+import { useLang } from '@/lib/lang'
+import { useT } from '@/lib/translations'
 
-const bars = [
-  { label: 'Location', val: '4.5', pct: 90 },
-  { label: 'Cleanliness', val: '4.4', pct: 88 },
-  { label: 'Value', val: '4.2', pct: 85 },
-  { label: 'Service', val: '4.3', pct: 87 },
-  { label: 'Comfort', val: '4.4', pct: 89 },
-  { label: 'Breakfast', val: '4.3', pct: 86 },
+const BAR_VALUES = [
+  { val: '4.5', pct: 90 },
+  { val: '4.4', pct: 88 },
+  { val: '4.2', pct: 85 },
+  { val: '4.3', pct: 87 },
+  { val: '4.4', pct: 89 },
+  { val: '4.3', pct: 86 },
 ]
 
 const reviews = [
@@ -57,16 +59,19 @@ function RatingBar({ label, val, pct, index }: { label: string; val: string; pct
 }
 
 export default function ReviewsPage() {
+  const { lang } = useLang()
+  const tr = useT(lang).pages.reviews
+
   return (
     <>
       {/* Header */}
       <section className="text-center" style={{ background: 'var(--bark)', padding: 'calc(var(--nav-h) + 4rem) var(--gutter) 3.5rem' }}>
-        <Reveal><SectionLabel light center>Guest Voices</SectionLabel></Reveal>
+        <Reveal><SectionLabel light center>{tr.heroLabel}</SectionLabel></Reveal>
         <Reveal delay={0.05}>
-          <h1 className="font-[family-name:var(--font-head)] italic text-[clamp(2.5rem,6vw,4.5rem)] mt-3" style={{ color: 'var(--white)' }}>What our guests say.</h1>
+          <h1 className="font-[family-name:var(--font-head)] italic text-[clamp(2.5rem,6vw,4.5rem)] mt-3" style={{ color: 'var(--white)' }}>{tr.heroH1}</h1>
         </Reveal>
         <Reveal delay={0.1}>
-          <p className="max-w-[500px] mx-auto mt-3 text-[0.92rem]" style={{ color: 'rgba(212,196,168,0.72)' }}>Ten reviews from guests who stayed at Mahoro and took the time to write about it honestly.</p>
+          <p className="max-w-[500px] mx-auto mt-3 text-[0.92rem]" style={{ color: 'rgba(212,196,168,0.72)' }}>{tr.heroP}</p>
         </Reveal>
       </section>
 
@@ -76,16 +81,16 @@ export default function ReviewsPage() {
           <Reveal>
             <div className="text-center px-12 py-10 border rounded-[var(--radius)]" style={{ background: 'var(--white)', borderColor: 'var(--border)' }}>
               <span className="font-[family-name:var(--font-head)] italic text-[clamp(4rem,8vw,6rem)] leading-none block" style={{ color: 'var(--bark)' }}>4.6</span>
-              <div className="text-[0.78rem] tracking-[0.08em] my-1" style={{ color: 'var(--ink-light)' }}>out of 5</div>
+              <div className="text-[0.78rem] tracking-[0.08em] my-1" style={{ color: 'var(--ink-light)' }}>{tr.outOf}</div>
               <div className="text-[1.1rem] tracking-[0.1em] my-2" style={{ color: 'var(--gold-warm)' }}>★★★★½</div>
-              <div className="text-[0.72rem]" style={{ color: 'var(--ink-light)' }}>Based on 31 reviews<br />Booking.com — 2024–2025</div>
+              <div className="text-[0.72rem] whitespace-pre-line" style={{ color: 'var(--ink-light)' }}>{tr.basedOn}</div>
             </div>
           </Reveal>
           <div className="pt-2">
-            <Reveal><SectionLabel>Score breakdown</SectionLabel></Reveal>
+            <Reveal><SectionLabel>{tr.breakdownLabel}</SectionLabel></Reveal>
             <div className="flex flex-col gap-[1.1rem] mt-4">
-              {bars.map((bar, i) => (
-                <RatingBar key={bar.label} {...bar} index={i} />
+              {BAR_VALUES.map((bar, i) => (
+                <RatingBar key={i} label={tr.bars[i]} val={bar.val} pct={bar.pct} index={i} />
               ))}
             </div>
           </div>
@@ -95,8 +100,8 @@ export default function ReviewsPage() {
       {/* Reviews grid */}
       <section className="px-[var(--gutter)] py-[clamp(4rem,7vw,6rem)]" style={{ background: 'var(--parchment)' }}>
         <div className="mx-auto mb-8" style={{ maxWidth: 'var(--max-w)' }}>
-          <Reveal><SectionLabel>Guest Reviews</SectionLabel></Reveal>
-          <Reveal delay={0.05}><h2 className="font-[family-name:var(--font-head)] italic text-[clamp(2rem,4vw,2.8rem)] mt-2" style={{ color: 'var(--bark)' }}>Ten honest opinions.</h2></Reveal>
+          <Reveal><SectionLabel>{tr.reviewsLabel}</SectionLabel></Reveal>
+          <Reveal delay={0.05}><h2 className="font-[family-name:var(--font-head)] italic text-[clamp(2rem,4vw,2.8rem)] mt-2" style={{ color: 'var(--bark)' }}>{tr.reviewsH2}</h2></Reveal>
         </div>
         <StaggerReveal className="mx-auto grid md:grid-cols-3 gap-6" style={{ maxWidth: 'var(--max-w)' }}>
           {reviews.map((r, i) => (
@@ -122,10 +127,10 @@ export default function ReviewsPage() {
       {/* CTA */}
       <section className="px-[var(--gutter)] py-[clamp(3rem,6vw,5rem)] text-center" style={{ background: 'var(--cream)' }}>
         <Reveal>
-          <SectionLabel center>Your Turn</SectionLabel>
-          <h2 className="font-[family-name:var(--font-head)] italic text-[clamp(1.8rem,4vw,2.8rem)] mt-4 mb-4" style={{ color: 'var(--bark)' }}>Experience it for yourself.</h2>
-          <p className="text-[0.88rem] max-w-[460px] mx-auto mb-7" style={{ color: 'var(--ink-mid)' }}>Direct bookings receive a guaranteed 5% discount — the best rate available anywhere.</p>
-          <Link href="/booking" className="inline-flex items-center justify-center text-[0.75rem] font-medium tracking-[0.14em] uppercase px-8 py-[0.85rem] rounded-[var(--radius)] transition-all duration-300 hover:-translate-y-px cursor-pointer" style={{ background: 'var(--wood)', color: 'var(--white)', border: '1.5px solid var(--wood)' }}>Reserve Now — Save 5%</Link>
+          <SectionLabel center>{tr.ctaLabel}</SectionLabel>
+          <h2 className="font-[family-name:var(--font-head)] italic text-[clamp(1.8rem,4vw,2.8rem)] mt-4 mb-4" style={{ color: 'var(--bark)' }}>{tr.ctaH2}</h2>
+          <p className="text-[0.88rem] max-w-[460px] mx-auto mb-7" style={{ color: 'var(--ink-mid)' }}>{tr.ctaP}</p>
+          <Link href="/booking" className="inline-flex items-center justify-center text-[0.75rem] font-medium tracking-[0.14em] uppercase px-8 py-[0.85rem] rounded-[var(--radius)] transition-all duration-300 hover:-translate-y-px cursor-pointer" style={{ background: 'var(--wood)', color: 'var(--white)', border: '1.5px solid var(--wood)' }}>{tr.ctaBtn}</Link>
         </Reveal>
       </section>
     </>
